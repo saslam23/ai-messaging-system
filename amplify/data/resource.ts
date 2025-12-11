@@ -20,8 +20,8 @@ const schema = a.schema({
   Contact: a
     .model({
       id: a.id(),
-      tenantId:a.belongsTo("Tenant", "tenantId"),
- 
+      tenantId: a.id(),
+      tenant: a.belongsTo("Tenant", "tenantId"),
       name: a.string(),
       phone: a.string(),
       email: a.string(),
@@ -50,6 +50,7 @@ const schema = a.schema({
       outboundQueues: a.hasMany("OutboundQueue", "tenantId"),
       webhookLogs: a.hasMany("WebhookLog", "tenantId"),
       aiMessageDrafts: a.hasMany("AiMessageDraft", "tenantId"),
+       tenantSettings: a.hasMany("TenantSettings", "tenantId"),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 
@@ -59,7 +60,9 @@ const schema = a.schema({
   Message: a
     .model({
       id: a.id(),
-      tenantId: a.belongsTo("Tenant", "tenantId"),
+      tenantId: a.id(),
+      tenant: a.belongsTo("Tenant", "tenantId"),
+
       to: a.string(),
       from: a.string(),
       channel: a.string(),
@@ -75,7 +78,9 @@ const schema = a.schema({
   Campaign: a
     .model({
       id: a.id(),
-      tenantId: a.belongsTo("Tenant", "tenantId"),
+      tenantId: a.id(),
+      tenant: a.belongsTo("Tenant", "tenantId"),
+
       name: a.string(),
       description: a.string(),
       status: a.enum(["DRAFT", "ACTIVE", "PAUSED", "COMPLETED"]),
@@ -102,7 +107,8 @@ const schema = a.schema({
   OutboundQueue: a
     .model({
       id: a.id(),
-      tenantId: a.belongsTo("Tenant", "tenantId"),
+      tenantId: a.id(),
+      tenant: a.belongsTo("Tenant", "tenantId"),
       contactId: a.id(),
       channel: a.enum(["SMS", "EMAIL", "WHATSAPP"]),
       body: a.string(),
@@ -118,7 +124,9 @@ const schema = a.schema({
   WebhookLog: a
     .model({
       id: a.id(),
-      tenantId: a.belongsTo("Tenant", "tenantId"),
+      tenantId: a.id(),
+      tenant: a.belongsTo("Tenant", "tenantId"),
+
       provider: a.string(),
       eventType: a.string(),
       messageId: a.string(),
@@ -133,7 +141,9 @@ const schema = a.schema({
   TenantSettings: a
     .model({
       id: a.id(),
-      tenantId:  a.belongsTo("Tenant", "tenantId"),
+      tenantId: a.id(),
+      tenant: a.belongsTo("Tenant", "tenantId"),
+
       input: a.string(),
       output: a.string(),
       tone: a.string(),
@@ -147,7 +157,9 @@ const schema = a.schema({
   AiMessageDraft: a
     .model({
       id: a.id(),
-      tenantId: a.belongsTo("Tenant", "tenantId"),
+      tenantId: a.id(),
+      tenant: a.belongsTo("Tenant", "tenantId"),
+
       input: a.string(),
       output: a.string(),
       tone: a.string(),
