@@ -10,7 +10,7 @@ specifies that any user authenticated via an API key can "create", "read",
 const schema = a.schema({
   User:a.model({
     id:a.id(),
-    tenantId:a.ref("Tenant"),
+    tenantId:a.id(),
     email:a.string(),
     role:a.enum(["ADMIN","AGENT"])
   }).authorization((allow) => {
@@ -76,7 +76,7 @@ const schema = a.schema({
 ,
   OutboundQueue: a.model({
     id:a.id(),
-    tenantId:a.ref("Tenant"),
+    tenantId:a.id(),
     contactId:a.id(),
     channel:a.enum(["SMS","EMAIL","WHATSAPP"]),
     body:a.string(),
@@ -88,7 +88,7 @@ const schema = a.schema({
   }),
   WebhookLog:a.model({
     id:a.id(),
-    tenantId:a.ref("Tenant"),
+    tenantId:a.id(),
     provider:a.string(),
     eventType:a.string(),
     messageId:a.string(),
@@ -99,7 +99,7 @@ const schema = a.schema({
   }),
   TenanSettings:a.model({
     id:a.id(),
-    tenanId:a.ref("Tenant"),
+    tenanId:a.id(),
     input:a.string(),
     output:a.string(),
     tone:a.string(),
@@ -112,7 +112,7 @@ const schema = a.schema({
 
   AiMessageDraft:a.model({
     id:a.id(),
-    tenantId:a.ref("Tenant"),
+    tenantId:a.id(),
     input:a.string(),
     output:a.string(),
     tone:a.string(),
