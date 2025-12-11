@@ -13,20 +13,27 @@ Amplify.configure(outputs);
 const client = generateClient<Schema>();
 
 export default function App() {
+  const [todos, setTodos] = useState<Array<Schema["Contact"]["type"]>>([]);
 
-
+  function listTodos() {
+    client.models.Contact.list().then(({ data }) => {
+      setTodos(data);
+    })
+  }
 
   useEffect(() => {
-   
+    listTodos();
   }, []);
 
 
   return (
     <main>
       <h1>My todos</h1>
-  
+   
       <ul>
-
+        {todos.map((todo) => (
+          <li key={todo.id}>{todo.name}</li>
+        ))}
       </ul>
       <div>
         🥳 App successfully hosted. Try creating a new todo.

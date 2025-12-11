@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { channel } from "diagnostics_channel";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -7,22 +8,68 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
+  User:a.model({
+    id:a.id(),
+    tenantId:a.ref("Tenant"),
+    email:a.string(),
+    role:a.enum(["ADMIN","AGENT"])
+  }).authorization((allow) => {
+    return [allow.publicApiKey()];
+  }),
   Contact: a
     .model({
       id: a.id(),
       tenantId:a.id(),
       name:a.string(),
-      phone:a.string()
+      phone:a.string(),
+      email:a.string(),
+      channelPreference: a.enum(["SMS","EMAIL","WHATSAPP"]),
+      groups: a.string().array(),
+      createdAt: a.datetime(),
+      updatedAt: a.datetime(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
-
+  Tenant: a.model({
+    id:a.id(),
+    name:a.string(),
+    createdAt:a.datetime(),
+    updatedAt: a.datetime(),
+    users: a.hasMany("User", "tenantId"), 
+    contacts: a.hasMany("Contact", "tenantId"),
+    campaigns: a.hasMany("Campaign", "tenantId"),
+    messages: a.hasMany("Message", "tenantId")
+  }).authorization((allow) => {
+    return [allow.publicApiKey()];
+  }),
   Message: a.model({
     id:a.id(),
     tenantId:a.id(),
     to: a.string(),
+    from:a.string(),
+    channel: a.string(),
+
     body: a.string(),
     status: a.string(),
     createdAt: a.datetime(),
+  }).authorization((allow) => {
+    return [allow.publicApiKey()];
+  }),
+  Campaign: a.model({
+    id:a.id(),
+    tenantId:a.id(),
+    name:a.string(),
+    description:a.string(),
+   status:a.enum(["DRAFT","ACTIVE", "PAUSED", "COMPLETED"]),
+    createdAt:a.datetime(),
+    updatedAt:a.datetime(),
+  }).authorization((allow) => {
+    return [allow.publicApiKey()];
+  }),
+  CampaignStep: a.model({
+    id:a.id(),
+    delayMinutes:a.integer(),
+    messageTemplate: a.string(),
+    channel: a.enum(["SMS","EMAIL","WHATSAPP"]),
   }).authorization((allow) => {
     return [allow.publicApiKey()];
   })
