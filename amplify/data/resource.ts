@@ -49,7 +49,7 @@ const schema = a.schema({
     channel: a.string(),
 
     body: a.string(),
-    status: a.string(),
+    status: a.enum(["PENDING", "QUEUED", "SENT", "FAILED", "DELIVERED"]),
     createdAt: a.datetime(),
   }).authorization((allow) => {
     return [allow.publicApiKey()];
@@ -70,6 +70,53 @@ const schema = a.schema({
     delayMinutes:a.integer(),
     messageTemplate: a.string(),
     channel: a.enum(["SMS","EMAIL","WHATSAPP"]),
+  }).authorization((allow) => {
+    return [allow.publicApiKey()];
+  })
+,
+  OutboundQueue: a.model({
+    id:a.id(),
+    tenantId:a.ref("Tenant"),
+    contactId:a.id(),
+    channel:a.enum(["SMS","EMAIL","WHATSAPP"]),
+    body:a.string(),
+    scheduleFor:a.datetime(),
+    createdAt:a.datetime(),
+    processed:a.boolean(),
+  }).authorization((allow) => {
+     return [allow.publicApiKey()];
+  }),
+  WebhookLog:a.model({
+    id:a.id(),
+    tenantId:a.ref("Tenant"),
+    provider:a.string(),
+    eventType:a.string(),
+    messageId:a.string(),
+    payload:a.json(),
+    receivedAt:a.datetime(),
+  }).authorization((allow) => {
+    return [allow.publicApiKey()];
+  }),
+  TenanSettings:a.model({
+    id:a.id(),
+    tenanId:a.ref("Tenant"),
+    input:a.string(),
+    output:a.string(),
+    tone:a.string(),
+    createdAt:a.datetime(),
+
+  }).authorization((allow) => {
+    return [allow.publicApiKey()];
+  })
+  ,
+
+  AiMessageDraft:a.model({
+    id:a.id(),
+    tenantId:a.ref("Tenant"),
+    input:a.string(),
+    output:a.string(),
+    tone:a.string(),
+    createdAt:a.datetime(),
   }).authorization((allow) => {
     return [allow.publicApiKey()];
   })
