@@ -34,10 +34,10 @@ const schema = a.schema({
     name:a.string(),
     createdAt:a.datetime(),
     updatedAt: a.datetime(),
-    users: a.hasMany("User", "tenantId"), 
-    contacts: a.hasMany("Contact", "tenantId"),
-    campaigns: a.hasMany("Campaign", "tenantId"),
-    messages: a.hasMany("Message", "tenantId")
+    users: a.belongsTo("User", "tenantId"), 
+    contacts: a.belongsTo("Contact", "tenantId"),
+    campaigns: a.belongsTo("Campaign", "tenantId"),
+    messages: a.belongsTo("Message", "tenantId")
   }).authorization((allow) => {
     return [allow.publicApiKey()];
   }),
