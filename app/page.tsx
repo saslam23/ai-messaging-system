@@ -7,41 +7,38 @@ import "./../app/app.css";
 import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
-
+import {sendMessageAction} from "./actions/SendMessage";
 Amplify.configure(outputs);
 
-const client = generateClient<Schema>();
 
 export default function App() {
-  const [todos, setTodos] = useState<Array<Schema["Contact"]["type"]>>([]);
 
-  function listTodos() {
-    client.models.Contact.list().then(({ data }) => {
-      setTodos(data);
-    })
-  }
+const [to, setTo] = useState("");
+const [body, setBody] = useState("");
 
-  useEffect(() => {
-    listTodos();
-  }, []);
+const sendTheMessage = async () => {
+    const result = await sendMessageAction({
+      tenantId: "tenant123",
+      to,
+      channel: "SMS",
+      body,
+    });
+    console.log("Queued:", result);
 
+}
 
   return (
     <main>
-      <h1>My todos</h1>
-   
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{todo.name}</li>
-        ))}
-      </ul>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components/">
-          Review next steps of this tutorial.
-        </a>
-      </div>
+<h1>Ai Chat Messaging System</h1>
+     <>
+    <div>Send Message component</div>
+          <input placeholder="To" onChange={e => setTo(e.target.value)} />
+          <br></br>
+      <textarea placeholder="Message" onChange={e => setBody(e.target.value)} />
+        <br></br>
+    <button onClick={sendTheMessage}>Send Message</button>
+    </>
+     
     </main>
   );
 }
